@@ -12,6 +12,27 @@ public class SerializeTest {
     }
 
     @Test
-    public void testGet() {
+    public void testSerialize() {
+        BinaryTreeNode<Character> rootNode = TreeUtils.newBinaryTree();
+        String result = serialize.serialize(rootNode);
+
+        Assertions.assertEquals(result, "A,B,D,$,G,$,$,E,$,$,C,F,$,H,$,$,$");
+
+        rootNode = serialize.deserialize(result);
+
+        Assertions.assertEquals(serialize.serialize(rootNode), "A,B,D,$,G,$,$,E,$,$,C,F,$,H,$,$,$");
+    }
+
+    @Test
+    public void testSerialize2() {
+        /**
+         *            A
+         *       B        C
+         *         E    F   H
+         *       G
+         */
+        String str = "A,B,$,E,G,$,$,$,C,F,$,$,H,$,$";
+        BinaryTreeNode<Character> rootNode = serialize.deserialize(str);
+        Assertions.assertEquals(str, serialize.serialize(rootNode));
     }
 }
