@@ -2,14 +2,14 @@ package bz.math;
 
 public class NumberCount {
     /**
-     * 1到n整数中1的个数：用暴力法复杂度太高。
+     * 1到n整数中1的个数：用暴力法复杂度过高。
      * 需要找到数学规律
      */
     public int numberOfOneBetweenOneAndN(int n) {
         return numberOfOneBetweenOneAndN(String.valueOf(n));
     }
 
-    public int numberOfOneBetweenOneAndN(String nStr) {
+    private int numberOfOneBetweenOneAndN(String nStr) {
         if (nStr == null || nStr.length() < 1) {
             return 0;
         }
@@ -45,5 +45,40 @@ public class NumberCount {
         int numberOfOneInLower = numberOfOneBetweenOneAndN(strOtherThanHighest);
 
         return numberOfOneInHighest + numberOfOneInOther + numberOfOneInLower;
+    }
+
+    /**
+     * 数字以1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21...的格式序列到一个字符序列中。
+     * 求解第n位对应的数字。
+     * 直观的解法：就是暴力，累加位数。
+     * 高效解法：寻求数学规律
+     */
+    public int digitAtIndex(int index) {
+        int digits = 1;
+        while (true) {
+            int digitCount = digitCount(digits);
+            if (index < digitCount * digits) {
+                return digitAtIndex(index, digits);
+            }
+            index -= digitCount * digits;
+            digits++;
+        }
+    }
+
+    // 总共包含多少个数字，比如1位数10个，2位数90个： 10~99， 3位数900个： 100~999 等等
+    private int digitCount(int digits) {
+        return digits == 1 ? 10 : 9 * (int) Math.pow(10, digits - 1);
+    }
+
+    // 从digits位数中的数开始算起，第index个的数字是多少
+    // 比如两位数： 10 11 12 13, index位置为5的数字是2
+    private int digitAtIndex(int index, int digits) {
+        // 得到第index个的数（不是数字）是多少，比如例子中的 12（其实index为4和5都对应12）
+        int number = (digits == 1 ? 0 : (int) Math.pow(10, digits - 1)) + index / digits;
+        int indexLowerDigit = digits - index % digits - 1;
+        for (int i = 0; i < indexLowerDigit; ++i) {
+            number /= 10;
+        }
+        return number % 10;
     }
 }

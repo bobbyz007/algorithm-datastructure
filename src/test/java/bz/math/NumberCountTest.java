@@ -20,4 +20,15 @@ public class NumberCountTest {
         Assertions.assertEquals(23874, inst.numberOfOneBetweenOneAndN(32839));
 
     }
+
+    @Test
+    void testDigitAtIndex() {
+        Assertions.assertEquals(5, inst.digitAtIndex(5));
+        Assertions.assertEquals(1, inst.digitAtIndex(13));
+        Assertions.assertEquals(4, inst.digitAtIndex(19));
+        Assertions.assertEquals(0, inst.digitAtIndex(0));
+
+        Assertions.assertEquals(7, inst.digitAtIndex(1001));
+
+    }
 }
