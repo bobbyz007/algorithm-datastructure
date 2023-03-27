@@ -1,4 +1,4 @@
-package bz.tree;
+package bz.permutation;
 
 public class Permutation {
     public void permute(String str) {
