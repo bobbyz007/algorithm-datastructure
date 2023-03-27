@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public class OccurenceTest {
     Occurence inst = new Occurence();
@@ -30,6 +31,30 @@ public class OccurenceTest {
         Assertions.assertEquals(inst.moreThanHalfNum(new int[]{6, 7, 6, 3, 6, 6, 2}), inst.moreThanHalfNum2(new int[]{6, 7, 6, 3, 6, 6, 2}));
 
         Assertions.assertEquals(inst.moreThanHalfNum(new int[]{2, 2, 2, 2, 2 , 2}), inst.moreThanHalfNum2(new int[]{2, 2, 2, 2, 2 , 2}));
+    }
+
+    @Test
+    void testGetLeastSmallNumbers() {
+        int[] result = inst.getLeastSmallNumbers(new int[]{3, 5, 2, 1, 6, 8}, 2);
+        Assertions.assertArrayEquals(new int[]{1, 2}, Arrays.stream(result).sorted().toArray());
+
+        result = inst.getLeastSmallNumbers(new int[]{3, 5, 2, 1, 6, 8}, 4);
+        Assertions.assertArrayEquals(new int[]{1, 2, 3, 5}, Arrays.stream(result).sorted().toArray());
+
+        result = inst.getLeastSmallNumbers(new int[]{1, 1, 1, 1, 6, 8}, 3);
+        Assertions.assertArrayEquals(new int[]{1, 1, 1}, Arrays.stream(result).sorted().toArray());
+    }
+
+    @Test
+    void testGetLeastSmallNumbers2() {
+        int[] result = inst.getLeastSmallNumbers2(new int[]{3, 5, 2, 1, 6, 8}, 2);
+        Assertions.assertArrayEquals(new int[]{1, 2}, Arrays.stream(result).sorted().toArray());
+
+        result = inst.getLeastSmallNumbers2(new int[]{3, 5, 2, 1, 6, 8}, 4);
+        Assertions.assertArrayEquals(new int[]{1, 2, 3, 5}, Arrays.stream(result).sorted().toArray());
+
+        result = inst.getLeastSmallNumbers2(new int[]{1, 1, 1, 1, 6, 8}, 3);
+        Assertions.assertArrayEquals(new int[]{1, 1, 1}, Arrays.stream(result).sorted().toArray());
     }
 
     @Test

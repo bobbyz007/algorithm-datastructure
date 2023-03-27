@@ -2,6 +2,8 @@ package bz.array;
 
 import bz.Util;
 
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.random.RandomGenerator;
 
@@ -47,6 +49,65 @@ public class Occurence {
             }
         }
         // 要找的数字肯定是最后一次把次数设置为1时对应的数字
+        return result;
+    }
+
+    /**
+     * 最小的k个数
+     * 思路：基于快排算法， 缺点：需要修改numbers数组
+     */
+    public int[] getLeastSmallNumbers(int[] numbers, int k) {
+        int start = 0;
+        int end = numbers.length - 1;
+        int index = partition(numbers, start, end);
+        while (index != k - 1) {
+            if (index > k - 1) {
+                end = index - 1;
+                index = partition(numbers, start, end);
+            } else {
+                start = index + 1;
+                index = partition(numbers, start, end);
+            }
+        }
+
+        int[] result = new int[k];
+        for (int i = 0; i < k; i++) {
+            result[i] = numbers[i];
+        }
+        return result;
+    }
+
+    /**
+     * 最小的k个数
+     * 思路：基于堆排序算法，java已有实现 PriorityQueue
+     */
+    public int[] getLeastSmallNumbers2(int[] numbers, int k) {
+        // 默认是小堆，自定义创建大堆
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(k, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o2 - o1;
+            }
+        });
+
+        // 建立大堆
+        for (int i = 0; i < numbers.length; i++) {
+            if(maxHeap.size() < k){
+                // 优先级队列会自动调整为大堆
+                maxHeap.offer(numbers[i]);
+            } else {
+                int top = maxHeap.peek();
+                if (top > numbers[i]){
+                    maxHeap.poll();
+                    maxHeap.offer(numbers[i]);
+                }
+            }
+        }
+
+        int[] result = new int[k];
+        for (int i = 0; i < k; i++) {
+            result[i] = maxHeap.poll();
+        }
         return result;
     }
 
