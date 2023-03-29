@@ -50,7 +50,7 @@ public class BITArray {
      * @param delta 更新的增量值
      */
     public void update(int pos, int delta){
-        for(int i = pos; i <= len; i += Util.lowbit(i)) {
+        for(int i = pos; i <= len; i += Util.lowestOneBit(i)) {
             c[i] += delta;
         }
     }
@@ -61,7 +61,7 @@ public class BITArray {
      */
     public int getsum(int pos) {
         int ans = 0;
-        for (int i = pos; i > 0; i -= Util.lowbit(i)) {
+        for (int i = pos; i > 0; i -= Util.lowestOneBit(i)) {
             ans += c[i];
         }
         return ans;
@@ -104,7 +104,7 @@ public class BITArray {
         updateForRR(r + 1, -delta); // d[r+1]减少了delta
     }
     private void updateForRR(int pos, int delta){
-        for(int i = pos; i <= len; i += Util.lowbit(i)) {
+        for(int i = pos; i <= len; i += Util.lowestOneBit(i)) {
             c[i] += delta;
             c2[i] += pos * delta;
         }
@@ -118,7 +118,7 @@ public class BITArray {
     // [1, pos]
     private int queryForRR(int pos) {
         int ans = 0;
-        for (int i = pos; i > 0; i -= Util.lowbit(i)) {
+        for (int i = pos; i > 0; i -= Util.lowestOneBit(i)) {
             ans += (pos + 1) * c[i] - c2[i];
         }
         return ans;
