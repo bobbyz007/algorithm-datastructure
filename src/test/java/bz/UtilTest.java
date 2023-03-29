@@ -21,8 +21,6 @@ public class UtilTest {
         Assertions.assertEquals(1, Util.lowestOneBit(11));
         Assertions.assertEquals(4, Util.lowestOneBit(12));
 
-        System.out.println(Integer.valueOf(0B11111111111111111000000111100000));;
-
         // -3: 11111111111111111111111111111101
         Assertions.assertEquals(1, Util.lowestOneBit(-3));
         // -150: 11111111111111111111111101101010

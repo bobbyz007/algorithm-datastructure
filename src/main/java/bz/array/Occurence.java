@@ -5,10 +5,68 @@ import bz.Util;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Random;
-import java.util.random.RandomGenerator;
 
 public class Occurence {
     Random random = new Random();
+
+    /**
+     *  一个整型数组里除了1个数字只出现一次之外，其他数字都出现了三次。 找出这个只出现一次的数字。
+     *
+     *  思路： 时间空间复杂度：o(n), o(1)
+     *  基于XOR没办法解决出现三次。 还是沿用位运算思路。
+     *
+     *  出现三次的数字的二进制表示的每一位分别累加，其和能被3整除。 只出现一次的数字的二进制对应位就是 对3取余。
+     */
+    public int findNumberAppearOnlyOnce(int[] numbers) {
+        // bitSum[0] -> 高位
+        int[] bitSum = new int[32];
+        for (int number : numbers) {
+            int bitMask = 1;
+            for (int j = 31; j >= 0; j--) {
+                int bit = number & bitMask;
+                if (bit != 0) {
+                    bitSum[j]++;
+                }
+                bitMask <<= 1;
+            }
+        }
+
+        int result = 0;
+        for (int i = 0; i < 32; i++) {
+            result <<= 1;
+            result += (bitSum[i] % 3);
+        }
+        return result;
+    }
+
+    /**
+     *  一个整型数组里除了2个数字之外，其他数字都出现了两次。 找出这2个只出现一次的数字。
+     *
+     *  思路： 时间空间复杂度：o(n), o(1)
+     *  基于XOR异或预算，相同的数XOR结果为0，但要求有2个只出现一次的数字， 需考虑把数组分成两个子数组。
+     *
+     *  怎么分？： 首先所有数据XOR，得到结果中的某一bit肯定不为0，再以这个bit的值0或1分成两个组。 由于XOR结果为0，意味着两个bit一个为0，一个为1
+     *  这样就保证两个子数组各自只包含1个出现一次的数字
+     */
+    public int[] findTwoNumbersAppearOnlyOnce(int[] numbers) {
+        int allXor = 0;
+        for (int number : numbers) {
+            allXor ^= number;
+        }
+
+        int[] result = new int[2];
+        int oneBit = Util.lowestOneBit(allXor);
+        for (int number : numbers) {
+            if ((number & oneBit) == 0) {
+                result[0] ^= number;
+            } else {
+                result[1] ^= number;
+            }
+        }
+
+        return result;
+    }
+
     /**
      * 出现次数超过数组长度一半的数字：假设数组中肯定存在这种数字
      * 思路：基于快速排序，超过数组长度一半，那么这个数字肯定出现在中位数位置。

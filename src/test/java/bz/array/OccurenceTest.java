@@ -9,6 +9,27 @@ import java.util.Arrays;
 
 public class OccurenceTest {
     Occurence inst = new Occurence();
+
+    @Test
+    void tesFindTwoNumbersAppearOnlyOnce() {
+        int[] result = inst.findTwoNumbersAppearOnlyOnce(new int[]{1, 2, 3, 4, 5, 6, 2, 6, 5, 4});
+        Arrays.sort(result);
+        Assertions.assertArrayEquals(new int[]{1, 3}, result);
+
+        result = inst.findTwoNumbersAppearOnlyOnce(new int[]{1,2,2,1,3,4,4,3,5,5,6,6,7,7,8,8,9,9,10,10,1000,2000});
+        Arrays.sort(result);
+        Assertions.assertArrayEquals(new int[]{1000, 2000}, result);
+
+    }
+
+    @Test
+    void testFindNumberAppearOnlyOnce() {
+        Assertions.assertEquals(3, inst.findNumberAppearOnlyOnce(new int[]{1,1,1,2,2,2,3}));
+        Assertions.assertEquals(100, inst.findNumberAppearOnlyOnce(new int[]{1,1,1,100,2,2,2,3,3,3}));
+
+        Assertions.assertEquals(9999, inst.findNumberAppearOnlyOnce(new int[]{1,1,2,2,3, 9999,3,4,4,4,1,2,3}));
+    }
+
     @Test
     void testMoreThanHalfNum() {
         // odd

@@ -48,7 +48,7 @@ public class Util {
     }
 
     /**
-     * 一般用于求1的个数或是否为2的n次方
+     * 一般用于求1的个数或是否为2的n次方:  最右边的1变为0
      */
     public static int rightestBitOneToZero(int x) {
         return x & (x - 1);
@@ -61,11 +61,11 @@ public class Util {
      */
     public static List<Integer> subSetWithBitOne(int x) {
         List<Integer> result = new ArrayList<>();
+        // 每一个数和x相与：只能包含x中的1
         for (int i = x; i != 0; i = (i - 1) & x) {
             // i: 表示x的包含二进制位1的子集
             result.add(i);
         }
         return result;
     }
-
 }
