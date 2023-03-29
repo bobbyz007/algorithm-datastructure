@@ -31,4 +31,8 @@ public class Util {
         return tmp > 0 ? gcd(y, tmp) : y;
     }
 
+    // 位运算： lowbit技术，用于树状数组
+    public static int lowbit(int x) {
+        return x & (-x);
+    }
 }
