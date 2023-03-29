@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Random;
 
-public class Occurence {
+public class Occurrence {
     Random random = new Random();
 
     /**

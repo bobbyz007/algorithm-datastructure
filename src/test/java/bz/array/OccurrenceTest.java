@@ -3,12 +3,11 @@ package bz.array;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-public class OccurenceTest {
-    Occurence inst = new Occurence();
+public class OccurrenceTest {
+    Occurrence inst = new Occurrence();
 
     @Test
     void tesFindTwoNumbersAppearOnlyOnce() {
@@ -80,7 +79,7 @@ public class OccurenceTest {
 
     @Test
     void testRandomInRange() throws Exception {
-        Method randomMethod = Occurence.class.getDeclaredMethod("randomInRange", new Class[]{int.class, int.class});
+        Method randomMethod = Occurrence.class.getDeclaredMethod("randomInRange", new Class[]{int.class, int.class});
         // 压制java语言的访问检查
         randomMethod.setAccessible(true);
 
