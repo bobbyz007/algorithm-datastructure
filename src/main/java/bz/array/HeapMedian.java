@@ -14,7 +14,6 @@ public class HeapMedian {
     // 中位数的左边维护最大堆
     PriorityQueue<Integer> maxHeap = new PriorityQueue<>(((o1, o2) -> o2 - o1));
 
-
     public void insert(int[] dataArr) {
         Arrays.stream(dataArr).forEach(data -> insert(data));
     }
