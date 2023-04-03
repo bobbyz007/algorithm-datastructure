@@ -68,4 +68,30 @@ public class Util {
         }
         return result;
     }
+
+    // 使用快速幂计算 x^n % mod 的值: 取模考虑溢出，时间复杂度logn
+    public static long qPow(long x, long n, long mod) {
+        long ret = 1;
+        while (n != 0) {
+            if ((n & 1) != 0) {
+                ret = ret * x % mod;
+            }
+            x = x * x % mod;
+            n >>= 1;
+        }
+        return ret;
+    }
+
+    // 快速幂计算x^n: 不考虑溢出，时间复杂度logn
+    public static long qPow(long x, long n) {
+        long ret = 1;
+        while (n != 0) {
+            if ((n & 1) != 0) {
+                ret = ret * x;
+            }
+            x = x * x;
+            n >>= 1;
+        }
+        return ret;
+    }
 }

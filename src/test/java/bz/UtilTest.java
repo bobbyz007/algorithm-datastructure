@@ -44,4 +44,19 @@ public class UtilTest {
         Assertions.assertEquals(Arrays.asList(4), Util.subSetWithBitOne(4));
         Assertions.assertEquals(Arrays.asList(6, 4, 2), Util.subSetWithBitOne(6));
     }
+
+    @Test
+    void testQPow() {
+        Assertions.assertEquals(27, Util.qPow(3, 3));
+        Assertions.assertEquals(6561, Util.qPow(9, 4));
+
+
+        int mod = 1000000009;
+        Assertions.assertEquals(725435489, Util.qPow(2345, 2336, mod));
+        Assertions.assertEquals(12167, Util.qPow(23, 3, mod));
+        Assertions.assertEquals(529, Util.qPow(23, 2, mod));
+
+
+
+    }
 }

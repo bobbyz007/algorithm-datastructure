@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 /**
  * 子数组相关：比如连续子数组的最大和等等。
+ * 子数组：都是指 数组中一个连续 非空 的元素序列
  */
 public class SubArray {
     /** 连续子数组的最大和：两种思路代码基本一致。
@@ -83,5 +84,84 @@ public class SubArray {
         return count;
     }
 
+    /**
+     * 和为奇数的子数组数目
+     *
+     * 思路：首先尝试动态规划
+     * f(i): 以i 为结尾的且和为奇数的子数组数目
+     * 当i为奇数时，统计i-1结尾的和为偶数：f(i) = 1 + i - f(i-1)
+     * 当i为偶数时，统计i-1结尾的和为奇数：f(i) = 0 + f(i-1)
+     */
+    public int findSubArrayCountWithSumOdd(int[] arr) {
+        long fi = 0;
+        long result = 0;
+        for (int i = 0; i < arr.length; i++) {
+            if ((arr[i] & 1) == 1) {
+                fi = 1 + i - fi;
+            }
+            result += fi;
+        }
+        // 答案可能会很大，将结果对 10^9 + 7 取余后返回。
+        return (int) (result % ((long) Math.pow(10,9) + 7));
+    }
+
+    /**
+     * 给两个整数数组 nums1 和 nums2 ，返回 两个数组中 公共的 、长度最长的子数组的长度 。
+     *
+     * 思路： 朴素的思想： 滑动窗口。
+     * nums1 从0,1...开始的子数组 与 nums2比较
+     * nums2 从0,1...开始的子数组 与 nums1比较
+     *
+     * 时间复杂度：O(N+M)*MIN(N,M)
+     */
+    public int findLongestCommonLength(int[] nums1, int[] nums2) {
+        int n = nums1.length, m = nums2.length;
+        int ret = 0;
+        for (int i = 0; i < n; i++) {
+            int len = Math.min(m, n - i);
+            int maxlen = maxLength(nums1, nums2, i, 0, len);
+            ret = Math.max(ret, maxlen);
+        }
+        for (int i = 0; i < m; i++) {
+            int len = Math.min(n, m - i);
+            int maxlen = maxLength(nums1, nums2, 0, i, len);
+            ret = Math.max(ret, maxlen);
+        }
+        return ret;
+    }
+    private int maxLength(int[] A, int[] B, int addA, int addB, int len) {
+        int ret = 0, k = 0;
+        for (int i = 0; i < len; i++) {
+            if (A[addA + i] == B[addB + i]) {
+                k++;
+            } else {
+                k = 0;
+            }
+            ret = Math.max(ret, k);
+        }
+        return ret;
+    }
+
+    /**
+     * 给定一个含有n个正整数的数组和一个正整数 target 。
+     * 找出该数组中满足其和 ≥ target 的长度最小的 连续子数组{nums[l], nums[l+1], ..., nums[r-1], nums[r]}，并返回其长度。
+     *
+     * 思路： 滑动窗口： 连续子数组可以联想到可以用滑动思想
+     */
+    public int findMinSubArrayLenWithTarget(int target, int[] nums) {
+        int l = 0, r = 0;
+        int sum = 0;
+        int result = Integer.MAX_VALUE;
+        while (l <= r && r < nums.length) {
+            while (sum < target && r < nums.length) {
+                sum += nums[r++];
+            }
+            while (sum >= target && l < nums.length) {
+                result = Math.min(result, r - l);
+                sum -= nums[l++];
+            }
+        }
+        return result == Integer.MAX_VALUE ? 0 : result;
+    }
 
 }
