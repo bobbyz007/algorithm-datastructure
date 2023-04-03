@@ -3,7 +3,7 @@ package bz.knapsack;
 import java.util.Arrays;
 
 /**
- * 背包问题：01背包，完全背包等等
+ * 背包问题：01背包，完全背包，多重背包等等
  */
 public class Knapsack {
     /**
