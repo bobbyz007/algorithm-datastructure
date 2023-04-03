@@ -3,6 +3,9 @@ package bz;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 位运算，数学运算等等
+ */
 public class Util {
     public static <T> void swap(T[] arr, int start, int end) {
         if (start == end) {

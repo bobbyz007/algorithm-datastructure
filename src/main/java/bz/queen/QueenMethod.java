@@ -5,6 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class QueenMethod {
+    /**
+     * 八皇后问题：同行同列同对角线 不能有两个皇后
+     * @param queens
+     * @return
+     */
     public List<int[]> arrangeMethod(int queens) {
         // int[i]=j: queen位于第i行，第j列
         int[] queenArr = new int[queens];
