@@ -7,6 +7,8 @@ import java.util.List;
  * 位运算，数学运算等等
  */
 public class Util {
+    public static final int MOD = (int)1e9 + 7;
+
     public static <T> void swap(T[] arr, int start, int end) {
         if (start == end) {
             return;

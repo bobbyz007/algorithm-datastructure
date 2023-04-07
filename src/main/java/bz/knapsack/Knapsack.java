@@ -1,6 +1,10 @@
 package bz.knapsack;
 
+import bz.Util;
+
 import java.util.Arrays;
+
+import static bz.Util.MOD;
 
 /**
  * 背包问题：01背包，完全背包，多重背包等等
@@ -81,6 +85,7 @@ public class Knapsack {
     }
 
     /**
+     * 多重背包
      * 有 N 种物品和一个容量为 V 的背包。第 i 种物品最多有 available[i] 件可用，每件耗费的空间是 C[i]，价值是 W[i]。
      * 求解将哪些物品装入背包可使这些物品的耗费的空间总和不超过背包容量，且价值总和最大。
      *
@@ -189,4 +194,122 @@ public class Knapsack {
         }
         return dp[volume[0]][volume[1]];
     }
+
+    /**
+     * 分组背包问题
+     *
+     * 有n个物品组，和容量为volume的背包。
+     * 第 i 个物品组共有 group[i] 件物品，其中第 i 个物品组的第 j 件物品的成本为cost[i][j] ，价值为worth[i][j] 。
+     *
+     * 注意：同一组内的物品最多只能选一个，可以不选
+     *
+     * 求解将哪些物品装入背包可使这些物品的费用总和不超过背包容量，且价值总和最大。
+     *
+     * 思路： 定义dp[i][j] 为考虑前 i 个物品组，背包容量不超过 j 的最大价值。
+     * 对于第i个物品组：
+     *   不选该组的任何物品：dp[i][j] = dp[i-1][j]
+     *   选择该组的第一件物品： dp[i][j] = dp[i-1][j-cost[i][0]] + worth[i][0]
+     *   选择该组的第二件物品： dp[i][j] = dp[i-1][j-cost[i][1]] + worth[i][1]
+     *   ...
+     *   选择该组的最后一件物品： dp[i][j] = dp[i-1][j-cost[i][group[i]-1]] + worth[i][group[i]-1]
+     *
+     *   最终的dp[i][j] = max{dp[i-1][j], dp[i-1][j-cost[i][k]] + worth[i][k]}, 其中 0 <= k < group[i]
+     */
+    public int groupPackMostOne(int[] group, int[][] cost, int[][] worth, int volume) {
+        int groupCnt = group.length;
+        int[][] dp = new int[groupCnt + 1][volume + 1];
+        // 物品组
+        for (int i = 1; i <= groupCnt; i++) {
+            int[] ci = cost[i - 1];
+            int[] wi = worth[i - 1];
+            int si = group[i - 1];
+            // 容量
+            for (int j = 1; j <= volume; j++) {
+                dp[i][j] = dp[i - 1][j];
+                // 组内的物品, 同一组内的物品最多只能选一个
+                for (int k = 0; k < si; k++) {
+                    if (j >= ci[k]) {
+                        dp[i][j] = Math.max(dp[i][j], dp[i - 1][j - ci[k]] + wi[k]);
+                    }
+                }
+            }
+        }
+        return dp[groupCnt][volume];
+    }
+    // 分组背包的空间优化： 因为当前物品组i只与前i-1个物品组有关，可以去掉物品组维度。
+    public int groupPackMostOneOptimized(int[] group, int[][] cost, int[][] worth, int volume) {
+        int groupCnt = group.length;
+        int[] dp = new int[volume + 1];
+        for (int i = 1; i <= groupCnt; i++) {
+            int[] ci = cost[i - 1];
+            int[] wi = worth[i - 1];
+            int si = group[i - 1];
+            // 倒序：避免覆盖依赖的值
+            for (int j = volume; j >= 0; j--) {
+                for (int k = 0; k < si; k++) {
+                    if (j >= ci[k]) {
+                        dp[j] = Math.max(dp[j], dp[j - ci[k]] + wi[k]);
+                    }
+                }
+            }
+        }
+        return dp[volume];
+    }
+
+    /**
+     * 分组背包的应用： 1155. 掷骰子的N种方法
+     *
+     * n 个一样的骰子，每个骰子上都有 k 个面，分别标号为 1 到 k 。
+     * 给定整数target，返回可能的方式(从总共 k^n 种方式中)滚动骰子的数量，使正面朝上的数字之和等于 target，即求方案数。
+     *
+     * 思路： 此处可将骰子看做物品组， 每个骰子的数值是具体的物品。 不同于上述分组背包条件中的每组最多选择一个物品，此处必须选择一件物品（骰子的数值）
+     * 参考分组背包的推导公式, 定义dp[i][j]: 表示考虑前 i 个物品组（骰子），凑成成本（数字之和）为 j 的方案数。
+     * dp[0][0] = 1： 凑成数字之和为0只有一种方案。
+     * 对于第i个物品组：
+     *    选择第一个物品（骰子数值1）： dp[i-1][j-1]
+     *    选择第二个物品（骰子数值2）： dp[i-1][j-2]
+     *    ...
+     *    选择第m个物品（骰子数值m）： dp[i-1][j-m]
+     * 则dp[i][j]是上述所有的方案的总和:
+     * k
+     * ∑ dp[i-1][j-l]
+     * l=1
+     */
+    public int numRollsToTarget(int n, int k, int target) {
+        int[][] dp = new int[n + 1][target + 1];
+        dp[0][0] = 1;
+        // 枚举物品组（每个骰子）
+        for (int i = 1; i <= n; i++) {
+            // 枚举背包容量（所掷得的总点数）
+            for (int j = 0; j <= target; j++) {
+                // 枚举决策（当前骰子所掷得的点数）
+                for (int l = 1; l <= k; l++) {
+                    if (j >= l) {
+                        dp[i][j] = (dp[i][j] + dp[i - 1][j - l]) % MOD;
+                    }
+                }
+            }
+        }
+        return dp[n][target];
+    }
+    // 空间降维优化：去掉物品组
+    public int numRollsToTargetOptimized(int n, int k, int target) {
+        int[] dp = new int[target + 1];
+        dp[0] = 1;
+        // 物品组
+        for (int i = 1; i <= n; i++) {
+            // 背包容量
+            for (int j = target; j >= 0; j--) {
+                dp[j] = 0;
+                // 组内物品
+                for (int l = 1; l <= k; l++) {
+                    if (j >= l) {
+                        dp[j] = (dp[j] + dp[j - l]) % MOD;
+                    }
+                }
+            }
+        }
+        return dp[target];
+    }
+
 }

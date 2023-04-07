@@ -59,4 +59,31 @@ public class KnapsackTest {
                 new int[]{2, 3, 5, 7},
                 new int[]{10, 18}));
     }
+
+    @Test
+    void testGroupPackMostOne() {
+        Assertions.assertEquals(10, inst.groupPackMostOne(new int[]{3, 3}, new int[][]{{1,2,1},{1,2,3}}, new int[][]{{2,4,1}, {1,3,6}}, 9));
+        Assertions.assertEquals(6, inst.groupPackMostOne(new int[]{3, 3}, new int[][]{{1,2,1},{1,2,3}}, new int[][]{{-2,-4,-1}, {1,3,6}}, 9));
+        Assertions.assertEquals(7, inst.groupPackMostOne(new int[]{3, 3}, new int[][]{{1,2,1},{1,2,3}}, new int[][]{{-2,-4,1}, {1,3,6}}, 9));
+
+
+        Assertions.assertEquals(inst.groupPackMostOneOptimized(new int[]{3, 3}, new int[][]{{1,2,1},{1,2,3}}, new int[][]{{2,4,1}, {1,3,6}}, 9),
+                inst.groupPackMostOne(new int[]{3, 3}, new int[][]{{1,2,1},{1,2,3}}, new int[][]{{2,4,1}, {1,3,6}}, 9));
+        Assertions.assertEquals(inst.groupPackMostOneOptimized(new int[]{3, 3}, new int[][]{{1,2,1},{1,2,3}}, new int[][]{{-2,-4,-1}, {1,3,6}}, 9),
+                inst.groupPackMostOne(new int[]{3, 3}, new int[][]{{1,2,1},{1,2,3}}, new int[][]{{-2,-4,-1}, {1,3,6}}, 9));
+        Assertions.assertEquals(inst.groupPackMostOneOptimized(new int[]{3, 3}, new int[][]{{1,2,1},{1,2,3}}, new int[][]{{-2,-4,1}, {1,3,6}}, 9),
+                inst.groupPackMostOne(new int[]{3, 3}, new int[][]{{1,2,1},{1,2,3}}, new int[][]{{-2,-4,1}, {1,3,6}}, 9));
+    }
+
+    @Test
+    void testNumRollsToTarget() {
+        Assertions.assertEquals(1, inst.numRollsToTarget(1, 6, 3));
+        Assertions.assertEquals(6, inst.numRollsToTarget(2, 6, 7));
+        Assertions.assertEquals(222616187, inst.numRollsToTarget(30, 30, 500));
+
+        Assertions.assertEquals(inst.numRollsToTargetOptimized(1, 6, 3), inst.numRollsToTarget(1, 6, 3));
+        Assertions.assertEquals(inst.numRollsToTargetOptimized(2, 6, 7), inst.numRollsToTarget(2, 6, 7));
+        Assertions.assertEquals(inst.numRollsToTargetOptimized(30, 30, 500), inst.numRollsToTarget(30, 30, 500));
+        Assertions.assertEquals(inst.numRollsToTargetOptimized(51, 182, 9999), inst.numRollsToTarget(51, 182, 9999));
+    }
 }
