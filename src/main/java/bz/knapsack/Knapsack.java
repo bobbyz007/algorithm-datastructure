@@ -214,6 +214,8 @@ public class Knapsack {
      *   选择该组的最后一件物品： dp[i][j] = dp[i-1][j-cost[i][group[i]-1]] + worth[i][group[i]-1]
      *
      *   最终的dp[i][j] = max{dp[i-1][j], dp[i-1][j-cost[i][k]] + worth[i][k]}, 其中 0 <= k < group[i]
+     *
+     *   时间复杂度： O(volume*总物品数）
      */
     public int groupPackMostOne(int[] group, int[][] cost, int[][] worth, int volume) {
         int groupCnt = group.length;
@@ -240,12 +242,14 @@ public class Knapsack {
     public int groupPackMostOneOptimized(int[] group, int[][] cost, int[][] worth, int volume) {
         int groupCnt = group.length;
         int[] dp = new int[volume + 1];
+        // 枚举物品组
         for (int i = 1; i <= groupCnt; i++) {
             int[] ci = cost[i - 1];
             int[] wi = worth[i - 1];
             int si = group[i - 1];
-            // 倒序：避免覆盖依赖的值
+            // 枚举背包容量，倒序：避免覆盖依赖的值
             for (int j = volume; j >= 0; j--) {
+                // 枚举决策（选哪个组内物品）
                 for (int k = 0; k < si; k++) {
                     if (j >= ci[k]) {
                         dp[j] = Math.max(dp[j], dp[j - ci[k]] + wi[k]);

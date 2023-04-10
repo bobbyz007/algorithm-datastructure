@@ -1,6 +1,6 @@
 package bz.knapsack;
 
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * 树形背包的应用：求解预算方案
@@ -99,4 +99,80 @@ public class TreePackApp {
         }
     }
 
+    /**
+     * 基于树形背包算法的时间复杂度是 O(cost.length * volume^2），对于此问题因为volume维度很大，造成时间复杂度很高
+     *
+     * 另一方面，物品维度的数量很小，不超过60， 且一个主件最多只能挂两个附件，可以枚举每个主件的选择方案：只选主件、选主件和一个附件、选主件和两个附件。
+     * 如此一来，我们将问题彻底转化为「分组背包」问题：
+     *   组内最多选择一件物品；
+     *   当前组不选任何物品，对应原问题中不选该主件及其附件的情况；
+     *   当前组选任意一件物品，对应原问题中选择主件以及选择/不选某些附件的情况。
+     *
+     * 而分组背包算法复杂度为 O(cost.length*volume)，可大幅提高算法性能。
+     */
+    public int maxValueOptimizedWithGroupPack(int[] parent, int[] cost, int[] priority, int N) {
+        int volume = N;
+
+        // 预处理出主件和附件的关系，例如 { 主件1 : [附件1, 附件2], 主件2 : [], 主件3 : [附件1] ... }
+        Map<Integer, List<Integer>> masterMap = new HashMap<>();
+        // 输入数据预留了虚拟根节点0
+        for (int i = 1; i < cost.length; i++) {
+            // 如果是主件
+            if (parent[i] == 0) {
+                if (!masterMap.containsKey(i)) {
+                    masterMap.put(i, new ArrayList<>());
+                }
+            } else {
+                List<Integer> list = masterMap.getOrDefault(parent[i], new ArrayList<>());
+                list.add(i);
+                masterMap.put(parent[i], list);
+            }
+        }
+
+        // 构建物品组：list 装的每个物品组，例如 [ [只选主件1, 选主件1和一个附件，选主件1和两个附件], [[主件2]], [[主件3, 主件3和附件1]] ... ]
+        List<List<int[]>> groups = new ArrayList<>();
+        for (int root : masterMap.keySet()) {
+            List<int[]> group = new ArrayList<>();
+            int rootWorth = cost[root] * priority[root];
+            // 不选任何附件：对应成本和价值
+            group.add(new int[]{cost[root], rootWorth});
+
+            // 最多2个附件
+            List<Integer> attachments = masterMap.get(root);
+            for (int i = 0; i < attachments.size(); i++) {
+                int attachment = attachments.get(i);
+                int attachWorth = cost[attachment] * priority[attachment];
+                // 选择一件附件
+                group.add(new int[]{cost[root] + cost[attachment], rootWorth + attachWorth});
+                for (int j = i + 1; j < attachments.size(); j++) {
+                    int attachment2 = attachments.get(i);
+                    // 选择两件附件
+                    group.add(new int[]{cost[root] + cost[attachment] + cost[attachment2],
+                            rootWorth + attachWorth + cost[attachment2] * priority[attachment2]});
+                }
+            }
+            groups.add(group);
+        }
+
+        // 分组背包一维空间优化：定义 dp[i][j] 为考虑前 i 件物品组，使用容量不超过 j 的最大价值
+        int[] dp = new int[volume + 1];
+
+        // 枚举物品组
+        for (int i = 0; i < groups.size(); i++) {
+            List<int[]> group = groups.get(i);
+            // 枚举背包容量
+            for (int j = volume; j >= 0; j--) {
+                // 枚举决策（选哪个组内物品）
+                for (int k = 0; k < group.size(); k++) {
+                    int[] info = group.get(k);
+                    int costi = info[0];
+                    int worth = info[1];
+                    if (j >= costi) {
+                        dp[j] = Math.max(dp[j], dp[j - costi] + worth);
+                    }
+                }
+            }
+        }
+        return dp[volume];
+    }
 }
