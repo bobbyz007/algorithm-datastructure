@@ -154,7 +154,7 @@ public class TreePackApp {
             groups.add(group);
         }
 
-        // 分组背包一维空间优化：定义 dp[i][j] 为考虑前 i 件物品组，使用容量不超过 j 的最大价值
+        // 分组背包一维空间优化：定义 dp[i][j] 为考虑前 i 个物品组，使用容量不超过 j 的最大价值
         int[] dp = new int[volume + 1];
 
         // 枚举物品组
@@ -175,4 +175,72 @@ public class TreePackApp {
         }
         return dp[volume];
     }
+
+    /**
+     * 基于二进制枚举优化分组逻辑，时间复杂度不变。
+     * 比如对于一个主件有2个附件的情况：
+     *   00：低 2 位全为 0，对应只选择主件，不选择任何附件的方案；
+     *   01：对应选择主件和附件 1 的方案；
+     *   10：对应选择主件和附件 2 的方案；
+     *   11：对应选择主件、附件 1 和附件 2 的方案。
+     */
+    public int maxValueOptimizedWithGroupPackBinary(int[] parent, int[] cost, int[] priority, int N) {
+        int volume = N;
+
+        // 预处理出主件和附件的关系，例如 { 主件1 : [附件1, 附件2], 主件2 : [], 主件3 : [附件1] ... }
+        Map<Integer, List<Integer>> masterMap = new HashMap<>();
+        // 输入数据预留了虚拟根节点0
+        for (int i = 1; i < cost.length; i++) {
+            // 如果是主件
+            if (parent[i] == 0) {
+                if (!masterMap.containsKey(i)) {
+                    masterMap.put(i, new ArrayList<>());
+                }
+            } else {
+                List<Integer> list = masterMap.getOrDefault(parent[i], new ArrayList<>());
+                list.add(i);
+                masterMap.put(parent[i], list);
+            }
+        }
+
+        // 分组背包一维空间优化：定义 dp[i][j] 为考虑前 i 个物品组，使用容量不超过 j 的最大价值
+        int[] dp = new int[volume + 1];
+
+        // 枚举物品组
+        for (int root : masterMap.keySet()) {
+            int rootWorth = cost[root] * priority[root];
+
+            // 枚举背包容量
+            for (int j = volume; j >= 0; j--) {
+                // 金额「从大到小」进行枚举，如果当前金额不足以选择主件，直接 break
+                if (j < cost[root]) {
+                    break;
+                }
+
+                // 该主件共有 cnt 件附件
+                List<Integer> attachments = masterMap.get(root);
+                int cnt = attachments.size();
+
+                // 二进制枚举所有的附件选择方案
+                for (int state = 0; state < (1 << cnt); state++) {
+                    // 选择方案中必须包含主件
+                    int ci = cost[root], wi = rootWorth;
+                    for (int k = 0; k < cnt; k++) {
+                        // 如果状态值中该位为 1，则选上该附件
+                        if (((state >> k) & 1) == 1) {
+                            int attach = attachments.get(k);
+                            ci += cost[attach];
+                            wi += cost[attach] * priority[attach];
+                        }
+                    }
+                    // 至此已计算出一种方案对应的 成本cost和价值worth
+                    if (j >= ci) {
+                        dp[j] = Math.max(dp[j], dp[j - ci] + wi);
+                    }
+                }
+            }
+        }
+        return dp[volume];
+    }
+
 }
