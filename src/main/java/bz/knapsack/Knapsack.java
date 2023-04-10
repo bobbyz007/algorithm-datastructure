@@ -7,7 +7,7 @@ import java.util.Arrays;
 import static bz.Util.MOD;
 
 /**
- * 背包问题：01背包，完全背包，多重背包，分组背包，树形背包（依赖背包）等等
+ * 背包问题：01背包，完全背包，多重背包，分组背包等等
  */
 public class Knapsack {
     /**
