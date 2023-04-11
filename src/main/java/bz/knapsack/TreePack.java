@@ -30,7 +30,7 @@ public class TreePack {
     // 定义 dp[u][j] 为考虑以 u 为根的子树，背包容量不超过 j 的最大价值
     int[][] dp = new int[n][n];
 
-    // 链式向前星存图
+    // 链式向前星存图：这种存图方式适用于边数较少的稀疏图,即边的数量接近于点的数量的时候。
     void add(int a, int b, int idx) {
         end[idx] = b; // 索引idx的边指向顶点b
         next[idx] = head[a]; // 原来以顶点a开始的 第一条边索引是head[a]，更新next数组
