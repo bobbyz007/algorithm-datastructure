@@ -63,6 +63,7 @@ public class ShortestPathSchemes {
         return rebuildGraphAndCount(roads);
     }
 
+    // 优化版本： 基于最小堆优化dijkstra求最短距离
     public int countPathsOptimized(int n, int[][] roads) {
         this.n = n;
 

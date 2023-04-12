@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 public class ShortestPathSchemesTest {
     @Test
     void testCountPaths() {
-        Assertions.assertEquals(4, new ShortestPathSchemes().countPaths(7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},{3,5,1},{6,5,1},{2,5,1},{0,4,5},{4,6,2}}));
+        Assertions.assertEquals(4, new ShortestPathSchemes().countPaths(7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
+                {3,5,1},{6,5,1},{2,5,1},{0,4,5},{4,6,2}}));
         Assertions.assertEquals(1, new ShortestPathSchemes().countPaths(2, new int[][]{{1,0,10}}));
         Assertions.assertEquals(2891, new ShortestPathSchemes().countPaths(18, new int[][]{{0,1,3972},{2,1,1762},{3,1,4374},{0,3,8346},{3,2,2612},{4,0,6786},
                 {5,4,1420},{2,6,7459},{1,6,9221},{6,3,4847},{5,6,4987},{7,0,14609},{7,1,10637},{2,7,8875},{7,6,1416},{7,5,6403},{7,3,6263},
@@ -22,7 +23,8 @@ public class ShortestPathSchemesTest {
                 {12,16,19517},{17,2,57606},{17,3,54994},{17,14,14822},{17,11,27005},{0,17,63340},{17,7,48731},{8,17,44950},{17,16,4187},
                 {5,17,55134},{17,10,30494},{17,9,40040},{17,12,23704},{13,17,20644},{17,1,59368}}));
 
-        Assertions.assertEquals(4, new ShortestPathSchemes().countPathsOptimized(7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},{3,5,1},{6,5,1},{2,5,1},{0,4,5},{4,6,2}}));
+        Assertions.assertEquals(4, new ShortestPathSchemes().countPathsOptimized(7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
+                {3,5,1},{6,5,1},{2,5,1},{0,4,5},{4,6,2}}));
         Assertions.assertEquals(1, new ShortestPathSchemes().countPathsOptimized(2, new int[][]{{1,0,10}}));
 
         Assertions.assertEquals(2891, new ShortestPathSchemes().countPathsOptimized(18, new int[][]{{0,1,3972},{2,1,1762},{3,1,4374},{0,3,8346},{3,2,2612},{4,0,6786},
