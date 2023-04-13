@@ -76,7 +76,7 @@ public class MSTTest {
 
     @Test
     void testPrimOptimized() {
-        Assertions.assertEquals(5, new MST().primOptimized(0, 2, new int[][]{{1,0,5}}));
+        Assertions.assertEquals(5, new MSTPrimWithHeap().prim(0, 2, new int[][]{{1,0,5}}));
 
         /**
          * 最小生成树：
@@ -85,15 +85,15 @@ public class MSTTest {
          *   1        4
          *  0
          */
-        Assertions.assertEquals(10, new MST().primOptimized(0, 7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
+        Assertions.assertEquals(10, new MSTPrimWithHeap().prim(0, 7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
                 {3,5,1},{6,5,1},{2,5,1},{0,4,5},{4,6,2}}));
-        Assertions.assertEquals(10, new MST().primOptimized(1, 7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
+        Assertions.assertEquals(10, new MSTPrimWithHeap().prim(1, 7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
                 {3,5,1},{6,5,1},{2,5,1},{0,4,5},{4,6,2}}));
-        Assertions.assertEquals(10, new MST().primOptimized(3, 7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
+        Assertions.assertEquals(10, new MSTPrimWithHeap().prim(3, 7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
                 {3,5,1},{6,5,1},{2,5,1},{0,4,5},{4,6,2}}));
-        Assertions.assertEquals(10, new MST().primOptimized(4, 7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
+        Assertions.assertEquals(10, new MSTPrimWithHeap().prim(4, 7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
                 {3,5,1},{6,5,1},{2,5,1},{0,4,5},{4,6,2}}));
-        Assertions.assertEquals(10, new MST().primOptimized(6, 7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
+        Assertions.assertEquals(10, new MSTPrimWithHeap().prim(6, 7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
                 {3,5,1},{6,5,1},{2,5,1},{0,4,5},{4,6,2}}));
 
         int[][] edges = new int[][]{{0, 1, 3972}, {2, 1, 1762}, {3, 1, 4374}, {0, 3, 8346}, {3, 2, 2612}, {4, 0, 6786},
@@ -110,13 +110,13 @@ public class MSTTest {
                 {12, 16, 19517}, {17, 2, 57606}, {17, 3, 54994}, {17, 14, 14822}, {17, 11, 27005}, {0, 17, 63340}, {17, 7, 48731}, {8, 17, 44950}, {17, 16, 4187},
                 {5, 17, 55134}, {17, 10, 30494}, {17, 9, 40040}, {17, 12, 23704}, {13, 17, 20644}, {17, 1, 59368}};
         for (int i = 0; i < 18; i++) {
-            Assertions.assertEquals(72807, new MST().primOptimized(i, 18, edges));
+            Assertions.assertEquals(72807, new MSTPrimWithHeap().prim(i, 18, edges));
         }
     }
 
     @Test
     void testPrimOptimizedWithMap() {
-        Assertions.assertEquals(5, new MST().primOptimizedWithMap(0, 2, new int[][]{{1,0,5}}));
+        Assertions.assertEquals(5, new MSTPrimWithHeapMap().prim(0, 2, new int[][]{{1,0,5}}));
 
         /**
          * 最小生成树：
@@ -125,15 +125,15 @@ public class MSTTest {
          *   1        4
          *  0
          */
-        Assertions.assertEquals(10, new MST().primOptimizedWithMap(0, 7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
+        Assertions.assertEquals(10, new MSTPrimWithHeapMap().prim(0, 7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
                 {3,5,1},{6,5,1},{2,5,1},{0,4,5},{4,6,2}}));
-        Assertions.assertEquals(10, new MST().primOptimizedWithMap(1, 7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
+        Assertions.assertEquals(10, new MSTPrimWithHeapMap().prim(1, 7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
                 {3,5,1},{6,5,1},{2,5,1},{0,4,5},{4,6,2}}));
-        Assertions.assertEquals(10, new MST().primOptimizedWithMap(3, 7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
+        Assertions.assertEquals(10, new MSTPrimWithHeapMap().prim(3, 7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
                 {3,5,1},{6,5,1},{2,5,1},{0,4,5},{4,6,2}}));
-        Assertions.assertEquals(10, new MST().primOptimizedWithMap(4, 7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
+        Assertions.assertEquals(10, new MSTPrimWithHeapMap().prim(4, 7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
                 {3,5,1},{6,5,1},{2,5,1},{0,4,5},{4,6,2}}));
-        Assertions.assertEquals(10, new MST().primOptimizedWithMap(6, 7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
+        Assertions.assertEquals(10, new MSTPrimWithHeapMap().prim(6, 7, new int[][]{{0,6,7},{0,1,2},{1,2,3},{1,3,3},{6,3,3},
                 {3,5,1},{6,5,1},{2,5,1},{0,4,5},{4,6,2}}));
 
         int[][] edges = new int[][]{{0, 1, 3972}, {2, 1, 1762}, {3, 1, 4374}, {0, 3, 8346}, {3, 2, 2612}, {4, 0, 6786},
@@ -150,7 +150,7 @@ public class MSTTest {
                 {12, 16, 19517}, {17, 2, 57606}, {17, 3, 54994}, {17, 14, 14822}, {17, 11, 27005}, {0, 17, 63340}, {17, 7, 48731}, {8, 17, 44950}, {17, 16, 4187},
                 {5, 17, 55134}, {17, 10, 30494}, {17, 9, 40040}, {17, 12, 23704}, {13, 17, 20644}, {17, 1, 59368}};
         for (int i = 0; i < 18; i++) {
-            Assertions.assertEquals(72807, new MST().primOptimizedWithMap(i, 18, edges));
+            Assertions.assertEquals(72807, new MSTPrimWithHeapMap().prim(i, 18, edges));
         }
     }
 }
