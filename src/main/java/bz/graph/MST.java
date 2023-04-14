@@ -62,7 +62,7 @@ public class MST {
 
             int u = edge[0], v = edge[1], w = edge[2];
             // 加入u和v后，没有构成环； 如果构成环，直接舍弃
-            if (uf.find(u) != uf.find(v)) {
+            if (!uf.isConnected(u, v)) {
                 minWeightSum += w;  // 选取这条边
                 uf.union(u, v); // 加入同一集合，用于判断是否连通
                 edgeCnt++;
