@@ -30,7 +30,6 @@ public class FrogCrossRiver {
      *   • 需要知道当前所在位置是经过多少步而来的，也就是需要知道上一步的跳跃步长 k。
      *
      * 在考虑加入记忆化时，只需要将DFS方法中的可变参数作为维度，dfs方法中的返回值作为缓存值即可。
-     *
      */
     public boolean canCross(int[] stones) {
         int n = stones.length;

@@ -11,7 +11,7 @@ public class QueenMethod {
      * @return
      */
     public List<int[]> arrangeMethod(int queens) {
-        // int[i]=j: queen位于第i行，第j列
+        // int[i]=j: queen位于第i行(也就是第i个queen)，第j列
         int[] queenArr = new int[queens];
 
         List<int[]> result = new ArrayList<>();
