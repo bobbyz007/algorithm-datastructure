@@ -64,4 +64,135 @@ public class DfsTest {
         Assertions.assertEquals(Arrays.asList("(a)()()", "(a())()"), new Dfs().removeInvalidParentheses("(a)())()"));
         Assertions.assertEquals(Arrays.asList(""), new Dfs().removeInvalidParentheses(")("));
     }
+
+    @Test
+    void testMaxLength() {
+        Assertions.assertEquals(4, new Dfs().maxLength(Arrays.asList("un","iq","ue")));
+        Assertions.assertEquals(6, new Dfs().maxLength(Arrays.asList("cha","r","act","ers")));
+        Assertions.assertEquals(26, new Dfs().maxLength(Arrays.asList("abcdefghijklmnopqrstuvwxyz")));
+    }
+
+    @Test
+    void testMinimumTimeRequired() {
+        /**
+         * 朴素解法搜索空间（4个job，3个worker）
+         * {{0, 1, 2, 3}, {}, {}}
+         * {{0, 1, 2}, {3}, {}}
+         * {{0, 1, 2}, {}, {3}}
+         * {{0, 1, 3}, {2}, {}}
+         * {{0, 1}, {2, 3}, {}}
+         * {{0, 1}, {2}, {3}}
+         * {{0, 1, 3}, {}, {2}}
+         * {{0, 1}, {3}, {2}}
+         * {{0, 1}, {}, {2, 3}}
+         * {{0, 2, 3}, {1}, {}}
+         * {{0, 2}, {1, 3}, {}}
+         * {{0, 2}, {1}, {3}}
+         * {{0, 3}, {1, 2}, {}}
+         * {{0}, {1, 2, 3}, {}}
+         * {{0}, {1, 2}, {3}}
+         * {{0, 3}, {1}, {2}}
+         * {{0}, {1, 3}, {2}}
+         * {{0}, {1}, {2, 3}}
+         * {{0, 2, 3}, {}, {1}}
+         * {{0, 2}, {3}, {1}}
+         * {{0, 2}, {}, {1, 3}}
+         * {{0, 3}, {2}, {1}}
+         * {{0}, {2, 3}, {1}}
+         * {{0}, {2}, {1, 3}}
+         * {{0, 3}, {}, {1, 2}}
+         * {{0}, {3}, {1, 2}}
+         * {{0}, {}, {1, 2, 3}}
+         * {{1, 2, 3}, {0}, {}}
+         * {{1, 2}, {0, 3}, {}}
+         * {{1, 2}, {0}, {3}}
+         * {{1, 3}, {0, 2}, {}}
+         * {{1}, {0, 2, 3}, {}}
+         * {{1}, {0, 2}, {3}}
+         * {{1, 3}, {0}, {2}}
+         * {{1}, {0, 3}, {2}}
+         * {{1}, {0}, {2, 3}}
+         * {{2, 3}, {0, 1}, {}}
+         * {{2}, {0, 1, 3}, {}}
+         * {{2}, {0, 1}, {3}}
+         * {{3}, {0, 1, 2}, {}}
+         * {{}, {0, 1, 2, 3}, {}}
+         * {{}, {0, 1, 2}, {3}}
+         * {{3}, {0, 1}, {2}}
+         * {{}, {0, 1, 3}, {2}}
+         * {{}, {0, 1}, {2, 3}}
+         * {{2, 3}, {0}, {1}}
+         * {{2}, {0, 3}, {1}}
+         * {{2}, {0}, {1, 3}}
+         * {{3}, {0, 2}, {1}}
+         * {{}, {0, 2, 3}, {1}}
+         * {{}, {0, 2}, {1, 3}}
+         * {{3}, {0}, {1, 2}}
+         * {{}, {0, 3}, {1, 2}}
+         * {{}, {0}, {1, 2, 3}}
+         * {{1, 2, 3}, {}, {0}}
+         * {{1, 2}, {3}, {0}}
+         * {{1, 2}, {}, {0, 3}}
+         * {{1, 3}, {2}, {0}}
+         * {{1}, {2, 3}, {0}}
+         * {{1}, {2}, {0, 3}}
+         * {{1, 3}, {}, {0, 2}}
+         * {{1}, {3}, {0, 2}}
+         * {{1}, {}, {0, 2, 3}}
+         * {{2, 3}, {1}, {0}}
+         * {{2}, {1, 3}, {0}}
+         * {{2}, {1}, {0, 3}}
+         * {{3}, {1, 2}, {0}}
+         * {{}, {1, 2, 3}, {0}}
+         * {{}, {1, 2}, {0, 3}}
+         * {{3}, {1}, {0, 2}}
+         * {{}, {1, 3}, {0, 2}}
+         * {{}, {1}, {0, 2, 3}}
+         * {{2, 3}, {}, {0, 1}}
+         * {{2}, {3}, {0, 1}}
+         * {{2}, {}, {0, 1, 3}}
+         * {{3}, {2}, {0, 1}}
+         * {{}, {2, 3}, {0, 1}}
+         * {{}, {2}, {0, 1, 3}}
+         * {{3}, {}, {0, 1, 2}}
+         * {{}, {3}, {0, 1, 2}}
+         * {{}, {}, {0, 1, 2, 3}}
+         */
+        Assertions.assertEquals(3, new Dfs().minimumTimeRequired(new int[]{3,2,3}, 3));
+        Assertions.assertEquals(5, new Dfs().minimumTimeRequiredOptimized(new int[]{3,2,3,4}, 3));
+        Assertions.assertEquals(5, new Dfs().minimumTimeRequired(new int[]{3,2,3}, 2));
+        Assertions.assertEquals(11, new Dfs().minimumTimeRequired(new int[]{1,2,4,7,8}, 2));
+
+        /**
+         * 剪枝优化解法搜索空间（4个job，3个worker）
+         * {{0, 3}, {1}, {2}}
+         * {{0}, {1, 3}, {2}}
+         * {{0}, {1}, {2, 3}}
+         * {{0, 2}, {1}, {3}}
+         * {{0, 2, 3}, {1}, {}}
+         * {{0, 2}, {1, 3}, {}}
+         * {{0}, {1, 2}, {3}}
+         * {{0, 3}, {1, 2}, {}}
+         * {{0}, {1, 2, 3}, {}}
+         * {{0, 1}, {2}, {3}}
+         * {{0, 1, 3}, {2}, {}}
+         * {{0, 1}, {2, 3}, {}}
+         * {{0, 1, 2}, {3}, {}}
+         * {{0, 1, 2, 3}, {}, {}}
+         */
+        Assertions.assertEquals(3, new Dfs().minimumTimeRequiredOptimized(new int[]{3,2,3}, 3));
+        Assertions.assertEquals(5, new Dfs().minimumTimeRequiredOptimized(new int[]{3,2,3,4}, 3));
+        Assertions.assertEquals(5, new Dfs().minimumTimeRequiredOptimized(new int[]{3,2,3}, 2));
+        Assertions.assertEquals(11, new Dfs().minimumTimeRequiredOptimized(new int[]{1,2,4,7,8}, 2));
+    }
+
+    @Test
+    void testGetCoprimes() {
+        Assertions.assertArrayEquals(new int[]{-1,0,-1,0,0,0,-1}, new Dfs().getCoprimes(new int[]{5,6,10,2,3,6,15}, new int[][]{
+                {0,1},{0,2},{1,3},{1,4},{2,5},{2,6}
+        }));
+        Assertions.assertArrayEquals(new int[]{-1,0,0,1}, new Dfs().getCoprimes(new int[]{2,3,3,2}, new int[][]{
+                {0,1},{1,2},{1,3}
+        }));
+    }
 }

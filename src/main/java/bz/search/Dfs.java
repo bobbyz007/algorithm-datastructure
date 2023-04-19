@@ -1,5 +1,7 @@
 package bz.search;
 
+import bz.Util;
+
 import java.util.*;
 
 /**
@@ -16,7 +18,7 @@ public class Dfs {
      * 给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。
      * 给出数字到字母的映射如下（与电话按键相同），注意 1 不对应任何字母。
      */
-    private Map<String, String[]> map = new HashMap<>(){{
+    private Map<String, String[]> numAlphaMap = new HashMap<>(){{
         put("2", new String[]{"a", "b", "c"});
         put("3", new String[]{"d", "e", "f"});
         put("4", new String[]{"g", "h", "i"});
@@ -42,7 +44,7 @@ public class Dfs {
             return;
         }
         String key = ds.substring(i, i + 1);
-        String[] all = map.get(key);
+        String[] all = numAlphaMap.get(key);
         for (String item : all) {
             sb.append(item);
             dfs(ds, i + 1, n, sb, ans);
@@ -268,5 +270,269 @@ public class Dfs {
             // 普通字符：无须删除，直接添加
             dfs(cs, u + 1, score, max, cur + String.valueOf(cs[u]), ans);
         }
+    }
+
+    /**
+     * 1239. 串联字符串的最大长度
+     * 给定一个字符串数组 arr，字符串 s 是将 arr 某一子序列字符串连接所得的字符串，如果 s 中的每一个字符都只出现过一次，那么它就是一个可行解。
+     * 请返回所有可行解 s 中最长长度。
+     *
+     * 输入：arr = ["un","iq","ue"]
+     * 输出：4
+     * 解释：所有可能的串联组合是 "","un","iq","ue","uniq" 和 "ique"，最大长度为 4。
+     *
+     * 思路：剪枝DFS
+     */
+    private int maxLen = Integer.MIN_VALUE;
+    private int[] hash; // 字符串对应的hash值
+    public int maxLength(List<String> ws) {
+        HashSet<Integer> set = new HashSet<>();
+        for (String s : ws) {
+            // 由于只关心某个字符是否出现，因此考虑用一个整数（32 bits） 来表示 一个有效的不重复字符串（最多26位字母）
+            int val = 0;
+            for (char c : s.toCharArray()) {
+                int t = c - 'a';
+                // 说明字母c已经重复出现过，直接剔除。
+                if (((val >> t) & 1) != 0) {
+                    val = -1;
+                    break;
+                }
+                // 对应的位置t 设置为1
+                val |= (1 << t);
+            }
+            if (val != -1) {
+                set.add(val);
+            }
+        }
+
+        int n = set.size();
+        if (n == 0) {
+            return 0;
+        }
+
+        // 存放有效的字符串的hash值（也就是上面求解的整数表示）
+        hash = new int[n];
+        int idx = 0;
+        // 可能拼接的最大值（对应字符串拼接的最大长度）
+        int total = 0;
+        for (Integer i : set) {
+            hash[idx++] = i;
+            total |= i;
+        }
+        dfs(0, 0, total, n);
+        return maxLen;
+    }
+
+    /**
+     * 剪枝DFS
+     * @param u 当前决策到第几个字符串
+     * @param cur 截止到当前已经串联后的字符串的 hash值
+     * @param total 后续未经处理的字符串所剩余的“最大价值”是多少，从而实现剪枝
+     * @param n 字符串个数，不变。
+     */
+    void dfs(int u, int cur, int total, int n) {
+        // 剪枝： 串联当前价值和剩余的最大价值 都小于等于 最大长度，直接返回。
+        if (getBitOneCount(cur | total) <= maxLen)  {
+            return;
+        }
+        if (u == n) {
+            // bit 1的个数就是字符串的字符个数
+            maxLen = Math.max(maxLen, getBitOneCount(cur));
+            return;
+        }
+        // 在原有基础上，选择该数字（不存在重复字符）
+        if ((hash[u] & cur) == 0) {
+            dfs(u + 1, hash[u] | cur, total - (total & hash[u]), n);
+        }
+        // 不选择该数字（不管是否存在重复字符，都可以不选）
+        dfs(u + 1, cur, total, n);
+    }
+    static Map<Integer, Integer> bitOneMap = new HashMap<>();
+    int getBitOneCount(int cur) {
+        if (bitOneMap.containsKey(cur)) {
+            return bitOneMap.get(cur);
+        }
+        int ans = 0;
+        for (int i = cur; i > 0; i -= Util.lowestOneBit(i)) {
+            ans++;
+        }
+        bitOneMap.put(cur, ans);
+        return ans;
+    }
+
+    /**
+     * 1723. 完成所有工作的最短时间
+     * 给你一个整数数组 jobs ，其中 jobs[i] 是完成第 i 项工作要花费的时间。
+     * 请你将这些工作分配给 k 位工人。所有工作都应该分配给工人，且每项工作只能分配给一位工人。
+     * 工人的 工作时间 是完成分配给他们的所有工作花费时间的总和。
+     * 请你设计一套最佳的工作分配方案，使工人的 最大工作时间 得以 最小化 。 返回分配方案中尽可能「最小」的 最大工作时间 。
+     *
+     * 也就是求解：n个数分成k份， 并且尽可能让k份平均。 这样最大的工作时间才是最小的。
+     *
+     * 思路： 朴素解法，可能超时
+     * 搜索空间（3个job，2个worker）
+     * {{0, 1, 2}, {}}
+     * {{0, 1}, {2}}
+     * {{0, 2}, {1}}
+     * {{0}, {1, 2}}
+     * {{1, 2}, {0}}  //重复
+     * {{1}, {0, 2}}  //重复
+     * {{2}, {0, 1}}    //重复
+     * {{}, {0, 1, 2}}  //重复
+     */
+    private int[] jobs;
+    private int jobCnt, workers;
+    private int minTime = Integer.MAX_VALUE;
+    public int minimumTimeRequired(int[] jobs, int k) {
+        this.jobs = jobs;
+        this.jobCnt = jobs.length;
+        this.workers = k;
+        int[] sum = new int[workers];
+        dfs(0, sum, 0);
+        return minTime;
+    }
+    /**
+     * u: 当前处理到那个 job
+     * sum : 工人的分配情况，例如：sum[0] = x 代表 0 号工人工作量为 x
+     * max : 当前的「最大工作时间」
+     */
+    void dfs(int u, int[] sum, int max) {
+        if (max >= minTime) {
+            return;
+        }
+        if (u == jobCnt) {
+            minTime = max;
+            return;
+        }
+        for (int i = 0; i < workers; i++) {
+            sum[i] += jobs[u];
+            dfs(u + 1, sum, Math.max(sum[i], max));
+            sum[i] -= jobs[u];
+        }
+    }
+
+    /**
+     * 优化dfs剪枝
+     * 搜索空间（3个job，2个worker）
+     * {{0, 2}, {1}}
+     * {{0}, {1, 2}}
+     * {{0, 1}, {2}}
+     * {{0, 1, 2}, {}}
+     */
+    public int minimumTimeRequiredOptimized(int[] jobs, int k) {
+        this.jobs = jobs;
+        this.jobCnt = jobs.length;
+        this.workers = k;
+        int[] sum = new int[workers];
+        dfs(0, 0, sum, 0);
+        return minTime;
+    }
+    /**
+     * u: 当前处理到那个 job
+     * used : 当前分配给了多少个工人了
+     * sum: 工人的分配情况，例如：sum[0] = x 代表 0 号工人工作量为 x
+     * max: 当前的「最大工作时间」
+     */
+    void dfs(int u, int used, int[] sum, int max) {
+        if (max >= minTime) {
+             return;
+        }
+        if (u == jobCnt) {
+            minTime = max;
+            return;
+        }
+        // 优先分配给「空闲工人」
+        if (used < workers) {
+            sum[used] = jobs[u];
+            dfs(u + 1, used + 1, sum, Math.max(sum[used], max));
+            sum[used] = 0;
+        }
+        for (int i = 0; i < used; i++) {
+            sum[i] += jobs[u];
+            dfs(u + 1, used, sum, Math.max(sum[i], max));
+            sum[i] -= jobs[u];
+        }
+    }
+
+    /**
+     * 1766. 互质数
+     * 也就是对树的每个节点从下往上找，找到最近的「与其互质」的祖先节点。
+     *
+     * 给你一个 n 个节点的树（也就是一个无环连通无向图），节点编号从 0 到 n - 1 ，且恰好有 n -1 条边，每个节点有一个值。树的 根节点 为 0 号点。
+     * 给你一个整数数组 nums 和一个二维数组 edges 来表示这棵树。nums[i] 表示第 i 个点的值，edges[j] = [uj, vj] 表示节点 uj 和节点 vj 在树中有一条边。
+     * 一个节点 不是 它自己的祖先节点。
+     *
+     * 请你返回一个大小为 n 的数组 ans ，其中 ans[i]是离节点 i 最近的祖先节点且满足 nums[i] 和 nums[ans[i]] 是 互质的 ，如果不存在这样的祖先节点，ans[i] 为 -1 。
+     *
+     * 1 <= nums[i] <= 50
+     * 1 <= nums.length <= 10^5
+     */
+    int[] closestPrimeAncestor;
+    Map<Integer, List<Integer>> edgeMap = new HashMap<>(); // 边映射
+    Map<Integer, List<Integer>> primeMap = new HashMap<>(); // 互质数字典
+    int[] depth; // 节点高度，根节点最低
+    int[] pos = new int[52]; // 节点值对应的编号
+    public int[] getCoprimes(int[] nums, int[][] edges) {
+        int n = nums.length;
+        closestPrimeAncestor = new int[n];
+        depth = new int[n];
+        Arrays.fill(closestPrimeAncestor, - 1);
+        Arrays.fill(pos, -1);
+        for (int[] edge : edges) {
+            int a = edge[0], b = edge[1];
+            List<Integer> alist = edgeMap.getOrDefault(a, new ArrayList<>());
+            alist.add(b);
+            edgeMap.put(a, alist);
+            List<Integer> blist = edgeMap.getOrDefault(b, new ArrayList<>());
+            blist.add(a);
+            edgeMap.put(b, blist);
+        }
+        for (int i = 1; i <= 50; i++) {
+            for (int j = 1; j <= 50; j++) {
+                if (Util.gcd(i, j) == 1) {
+                    List<Integer> list = primeMap.getOrDefault(i, new ArrayList<>());
+                    list.add(j);
+                    primeMap.put(i, list);
+                }
+            }
+        }
+
+        dfs(nums, 0, -1);
+
+        return closestPrimeAncestor;
+    }
+
+    /**
+     * @param nums nums[i]=j 表示i是节点编号， j是节点值
+     * @param u 当前决策的节点编号
+     * @param parent u的父亲节点编号
+     */
+    private void dfs(int[] nums, int u, int parent) {
+        int uValue = nums[u];
+        for (int v : primeMap.get(uValue)) {
+            if (pos[v] == -1) {
+                continue;
+            }
+            // 因为是从根节点往下搜索，且pos保存了 当前节点u的 所有祖先节点（当然包括根节点）的编号（值不是-1）
+            // 如果depth更大，说明离u更近
+            if (closestPrimeAncestor[u] == -1 || depth[closestPrimeAncestor[u]] < depth[pos[v]]) {
+                closestPrimeAncestor[u] = pos[v];
+            }
+        }
+        // 保留现场： 节点u的值对应的编号
+        int p = pos[uValue];
+        pos[uValue] = u;
+        for (int child : edgeMap.get(u)) {
+            if (child == parent) {
+                continue;
+            }
+            depth[child] = depth[u] + 1;
+
+            // 递归处理子节点
+            dfs(nums, child, u);
+        }
+
+        // 处理完了所有子节点后，还原现场。 pos中的有效值（不是-1）始终保证是对应单条路径
+        pos[uValue] = p;
     }
 }
