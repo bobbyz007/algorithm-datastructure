@@ -1,9 +1,12 @@
-package bz.queen;
+package bz.search;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * DFS
+ */
 public class QueenMethod {
     /**
      * 八皇后问题：同行同列同对角线 不能有两个皇后

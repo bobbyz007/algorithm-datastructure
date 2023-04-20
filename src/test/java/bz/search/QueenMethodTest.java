@@ -1,5 +1,6 @@
-package bz.queen;
+package bz.search;
 
+import bz.search.QueenMethod;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
