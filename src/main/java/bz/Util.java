@@ -99,4 +99,17 @@ public class Util {
         }
         return ret;
     }
+
+    // 快速乘法a*k：采用倍增的思想
+    public static long qMul(long a, long k) {
+        long ans = 0;
+        while (k > 0) {
+            if ((k & 1) == 1) {
+                ans += a;
+            }
+            k >>= 1;
+            a += a;
+        }
+        return ans;
+    }
 }

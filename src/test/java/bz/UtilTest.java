@@ -55,8 +55,12 @@ public class UtilTest {
         Assertions.assertEquals(725435489, Util.qPow(2345, 2336, mod));
         Assertions.assertEquals(12167, Util.qPow(23, 3, mod));
         Assertions.assertEquals(529, Util.qPow(23, 2, mod));
+    }
 
-
-
+    @Test
+    void testQMul() {
+        Assertions.assertEquals(100, Util.qMul(10, 10));
+        Assertions.assertEquals(322 * 2823, Util.qMul(322, 2823));
+        Assertions.assertEquals(923 * 52913, Util.qMul(923, 52913));
     }
 }
