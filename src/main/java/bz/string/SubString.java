@@ -39,4 +39,17 @@ public class SubString {
         }
         return maxLength;
     }
+
+    /**
+     * 字符串的幂
+     * 最短周期的多次重复，此重复次数即是幂。
+     * abcd: abcd^1, 1
+     * aaaa: a^4, 4
+     * ababab = ab^3 3
+     *
+     * 思路：重复拼接字符串str，然后从索引位置1开始查找。
+     */
+    public int stringPower(String str) {
+        return str.length() / (str + str).indexOf(str, 1);
+    }
 }

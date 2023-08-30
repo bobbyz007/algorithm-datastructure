@@ -13,4 +13,14 @@ public class SubStringTest {
         Assertions.assertEquals(2, inst.longestSubstringWithoutDuplication("aaaaabaaa"));
         Assertions.assertEquals(2, inst.longestSubstringWithoutDuplication("aaaaaaaaab"));
     }
+
+    @Test
+    void testStringPower() {
+        Assertions.assertEquals(1, inst.stringPower("abcd"));
+        Assertions.assertEquals(1, inst.stringPower("abcdefgg"));
+
+        Assertions.assertEquals(4, inst.stringPower("aaaa"));
+        Assertions.assertEquals(3, inst.stringPower("ababab"));
+        Assertions.assertEquals(4, inst.stringPower("abaabaabaaba"));
+    }
 }
