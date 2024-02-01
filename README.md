@@ -1,2 +1,2 @@
 # algorithm-datastructure
-Algorithms and data structures.
+All kinds of algorithms and data structures.
